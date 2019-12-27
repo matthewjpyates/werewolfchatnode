@@ -193,7 +193,7 @@ function seeIfChatIDIsTaken(chatidtopub, keystr, response) {
       }
       if (result.length > 0) {
         console.log("id taken for " + chatidtopub);
-        response.send("chatidtaken")
+        response.send("fail:chatidtaken")
 
         db.close();
       }
@@ -224,10 +224,12 @@ function publishPubKey(chatidtopub, keystringtopub, restouser) {
     dbo.collection("public_keys").insertOne(pubKeyObj, function (err, res) {
       if (err) {
         throw err;
-        res.send("fail")
+        res.send("fail:database_error")
       }
       console.log("Pubkey being added for " + chatidtopub);
-      restouser.send("success")
+
+      setTokenForIdToBePassedIn(chatidtopub, keystringtopub, res);
+      //restouser.send("success");
       db.close();
     });
   }
@@ -355,18 +357,20 @@ function setTokenForIdToBePassedIn(chatIdForNewToken, keyForUser, restouser) {
     var newToken = { chatid: chatIdForNewToken, token: newTokenStr };
 
     // executes the cryptoworker jar to encrypt the token
-    console.log("about to run java -jar /home/ubuntu/crypto/cryptoWorker.jar -e " + keyForUser + " " + newTokenStr);
+    //console.log("about to run java -jar /home/ubuntu/crypto/cryptoWorker.jar -e " + keyForUser + " " + newTokenStr);
     child = exec("java -jar /home/ubuntu/crypto/cryptoWorker.jar -e " + keyForUser + " " + newTokenStr,
       function (error, stdout, stderr) {
 
         dbo.collection("tokens").insertOne(newToken, function (err, res) {
           if (err) {
 
-            restouser.send("fail:databat_error");
+            console.log("error on unserting the new token for "+ chatIdForNewToken);
+
+            restouser.send("fail:database_error");
 
           }
           else {
-            console.log("about to return" + "good:" + stdout);
+            //console.log("about to return" + "good:" + stdout);
             restouser.send("good:" + stdout);
           }
           db.close();
