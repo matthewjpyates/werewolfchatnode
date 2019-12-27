@@ -510,13 +510,13 @@ app.get('/publishpubkey/:chatid/:pubkeystring', function (req, res) {
 
 app.get('/gettoken/:chatid', function (req, res) {
   var chatidtomaketokenfor = req.params.chatid;
-  var touser = setTokenForId(chatidtomaketokenfor, res);
+  //var touser = setTokenForId(chatidtomaketokenfor, res);
 
   lookupPubKeyForUserThenPassPubKeyToFunctionInArgs(chatidtomaketokenfor,
     function (public_key) { return setTokenForIdToBePassedIn(chatidtomaketokenfor, public_key, res); },
     res);
 
-  res.send(touser);
+  //res.send(touser);
 
 });
 
