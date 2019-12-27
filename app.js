@@ -369,9 +369,9 @@ function setTokenForIdToBePassedIn(chatIdForNewToken, keyForUser, restouser) {
             console.log("about to return" + "good:" + stdout);
             restouser.send("good:" + stdout);
           }
+          db.close();
         });
       });
-    db.close();
 
   });
 
@@ -418,7 +418,7 @@ function setTokenForId(chatIdForNewToken, restouser) {
             // res.send("fail");
             db.close();
 
-            output = "fail: database error";
+            output = "fail:database_error";
           }
           else {
             console.log("token " + newTokenStr + " made for " + chatIdForNewToken);
@@ -524,13 +524,16 @@ app.get('/changechatid/:oldchatid/:newchatid/:token', function (req, res) {
   var oldchatid = req.params.oldchatid;
   var newchatid = req.params.newchatid;
   var token = req.params.token;
-  if (token == getTokenForUser(olchatid)) {
-    changeusername(oldchatid, newchatid);
-    res.send('chatid changed');
-  }
-  else {
-    res.send('token failed');
-  }
+
+  seeIfTokenIsGoodForUserThenExecuteFunction(oldchatid, token,changeusername(oldchatid, newchatid), res);
+
+  //if (token == getTokenForUser(olchatid)) {
+  //  changeusername(oldchatid, newchatid);
+  //  res.send('chatid changed');
+  //}
+  //else {
+  //  res.send('token failed');
+  //}
 
 });
 
