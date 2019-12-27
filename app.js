@@ -221,7 +221,7 @@ function publishPubKey(chatidtopub, keystringtopub, restouser) {
 
 
 
-    dbo.collection("public_keys").insertOne(pubKeyObj, function (err, restouser) {
+    dbo.collection("public_keys").insertOne(pubKeyObj, function (err, result, restouser) {
       if (err) {
         throw err;
         restouser.send("fail:database_error")
@@ -232,8 +232,7 @@ function publishPubKey(chatidtopub, keystringtopub, restouser) {
       //restouser.send("success");
       db.close();
     });
-  }
-  );
+  });
 }
 
 
