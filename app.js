@@ -341,12 +341,18 @@ function lookupPubKeyForUserThenPassPubKeyToFunctionInArgs(user, funct_to_pass, 
 
 function setTokenForIdToBePassedIn(chatIdForNewToken, keyForUser, res) {
 
+  console.log("1 Here is the type of res "+ typeof res);
 
   var newTokenStr = randomstring.generate({length: 24, charset: 'alphabetic', capitalization: 'uppercase'});
 
 var sender = res;
 
+console.log("2 Here is the type of sender "+ typeof sender);
+
+
   mongoWrapper(function (err, db, sender) {
+    console.log("3 Here is the type of sender "+ typeof sender);
+
     if (err) throw err;
     var dbo = db.db("chatdb");
     var newToken = { chatid: chatIdForNewToken, token: newTokenStr };
@@ -355,6 +361,9 @@ var sender = res;
     //console.log("about to run java -jar /home/ubuntu/crypto/cryptoWorker.jar -e " + keyForUser + " " + newTokenStr);
     child = exec("java -jar /home/ubuntu/crypto/cryptoWorker.jar -e " + keyForUser + " " + newTokenStr,
       function (error, stdout, stderr, sender) {
+
+        console.log("4 Here is the type of sender "+ typeof sender);
+
 
         dbo.collection("tokens").insertOne(newToken, function (err, result, sender) {
           if (err) {
@@ -365,6 +374,8 @@ var sender = res;
 
           }
           else {
+            console.log("5 Here is the type of sender "+ typeof sender);
+
             //console.log("about to return" + "good:" + stdout);
             sender.send("good:" + stdout);
           }
