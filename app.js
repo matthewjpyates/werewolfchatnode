@@ -27,7 +27,7 @@ let messages = mongoose.model('Messages', messageSchema)
 let tokenSchema = mongoose.Schema({
   chatid: String,
   token: String
-},
+}, 
   { collection: 'tokens' })
 let tokens = mongoose.model('Tokens', tokenSchema)
 
@@ -87,7 +87,7 @@ mongoWrapper( function (err, db) {
 function pullAllPubKeys(res) {
 
 
-  MongoClient.connect(url, function (err, db) {
+  mongoWrapper(  function (err, db) {
     if (err) throw err;
     var dbo = db.db("chatdb");
     dbo.collection("public_keys").find({}, { projection: { _id: 0, chatid: 1, pubkeyhexstr: 1 } }).toArray(function (err, result) {
@@ -103,7 +103,7 @@ function pullAllPubKeys(res) {
 function pullAllMessagesForUser(res, user) {
 
 
-  MongoClient.connect(url, function (err, db) {
+  mongoWrapper(  function (err, db) {
     if (err) throw err;
     var dbo = db.db("chatdb");
     dbo.collection("messages").find({ toid: user },
@@ -131,7 +131,7 @@ function getObjectIdStrFromDate(date) {
 function pullAllMessagesForUserAfterTimeStamp(res, user, timeInMillis) {
 
 
-  MongoClient.connect(url, function (err, db) {
+  mongoWrapper(  function (err, db) {
     if (err) throw err;
     var dbo = db.db("chatdb");
     dbo.collection("messages").find({ toid: user },
@@ -158,7 +158,7 @@ function pullAllMessagesForUserAfterTimeStamp(res, user, timeInMillis) {
 }
 
 function addMessage(tochatid, fromchatid, message, restouser) {
-  MongoClient.connect(url, function (err, db) {
+  mongoWrapper(  function (err, db) {
     if (err) throw err;
     var dbo = db.db("chatdb");
     var messageObj = { toid: tochatid, fromid: fromchatid, encmessagehexstr: message };
@@ -182,7 +182,7 @@ var isTaken = false;
 
 function seeIfChatIDIsTaken(chatidtopub, keystr, response) {
 
-  return MongoClient.connect(url, function (err, db) {
+  return mongoWrapper(  function (err, db) {
     if (err) throw err;
     var dbo = db.db("chatdb");
     //var pubKeyObj = { chatid: chatidtopub, pubkeyhexstr: keystringtopub };
@@ -214,7 +214,7 @@ function seeIfChatIDIsTaken(chatidtopub, keystr, response) {
 
 function publishPubKey(chatidtopub, keystringtopub, restouser) {
 
-  MongoClient.connect(url, function (err, db) {
+  mongoWrapper(  function (err, db) {
     if (err) throw err;
     var dbo = db.db("chatdb");
     var pubKeyObj = { chatid: chatidtopub, pubkeyhexstr: keystringtopub };
@@ -240,7 +240,7 @@ function getPubkeyForUser(user) {
 
   var outputKey = "";
 
-  MongoClient.connect(url, function (err, db) {
+  mongoWrapper(  function (err, db) {
     if (err) throw err;
     var dbo = db.db("chatdb");
     dbo.collection("public_keys").find({ chatid: user }).toArray(function (err, result) {
@@ -270,7 +270,7 @@ function getTokenForUser(user) {
 
   var outputToken = "";
 
-  MongoClient.connect(url, function (err, db) {
+  mongoWrapper(  function (err, db) {
     if (err) throw err;
     var dbo = db.db("chatdb");
     dbo.collection("tokens").find({ chatid: user }, { projection: { _id: 0, chatid: 0 } }).toArray(function (err, result) {
@@ -291,7 +291,7 @@ function seeIfTokenIsGoodForUserThenExecuteFunction(user, token_passed_in_by_use
 
   var outputToken = "";
 
-  MongoClient.connect(url, function (err, db) {
+  mongoWrapper(  function (err, db) {
     if (err) throw err;
     var dbo = db.db("chatdb");
     dbo.collection("tokens").find({ chatid: user }, { projection: { _id: 0, chatid: 0 } }).toArray(function (err, result) {
@@ -321,7 +321,7 @@ function seeIfTokenIsGoodForUserThenExecuteFunction(user, token_passed_in_by_use
 function lookupPubKeyForUserThenPassPubKeyToFunctionInArgs(user,funct_to_pass, response) {
   console.log("about to pull keys for user");
 
-  MongoClient.connect(url, function (err, db) {
+  mongoWrapper(  function (err, db) {
     if (err) throw err;
     var dbo = db.db("chatdb");
     dbo.collection("public_keys").find({ chatid: user }).toArray(function (err, result) {
@@ -370,7 +370,7 @@ function setTokenForId(chatIdForNewToken, restouser) {
   var output = "test";
 
 
-  MongoClient.connect(url, function (err, db) {
+  mongoWrapper(  function (err, db) {
     if (err) throw err;
     var dbo = db.db("chatdb");
     var newToken = { chatid: chatIdForNewToken, token: newTokenStr };
@@ -411,7 +411,7 @@ function setTokenForId(chatIdForNewToken, restouser) {
 
 function changeusername(oldname, newname) {
 
-  MongoClient.connect(url, function (err, db) {
+  mongoWrapper(  function (err, db) {
     if (err) throw err;
     var dbo = db.db("chatdb");
 
