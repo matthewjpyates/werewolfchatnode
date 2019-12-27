@@ -345,7 +345,7 @@ function setTokenForIdToBePassedIn(chatIdForNewToken, keyForUser, res) {
 
   var newTokenStr = randomstring.generate({length: 24, charset: 'alphabetic', capitalization: 'uppercase'});
 
-
+var sender = res;
 
   mongoWrapper(function (err, db) {
     if (err) throw err;
@@ -362,12 +362,12 @@ function setTokenForIdToBePassedIn(chatIdForNewToken, keyForUser, res) {
 
             console.log("error on unserting the new token for "+ chatIdForNewToken);
 
-            res.send("fail:database_error");
+            sender.send("fail:database_error");
 
           }
           else {
             //console.log("about to return" + "good:" + stdout);
-            res.send("good:" + stdout);
+            sender.send("good:" + stdout);
           }
           db.close();
         });
