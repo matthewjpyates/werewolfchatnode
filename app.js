@@ -221,14 +221,14 @@ function publishPubKey(chatidtopub, keystringtopub, restouser) {
 
 
 
-    dbo.collection("public_keys").insertOne(pubKeyObj, function (err, res) {
+    dbo.collection("public_keys").insertOne(pubKeyObj, function (err, restouser) {
       if (err) {
         throw err;
         res.send("fail:database_error")
       }
       console.log("Pubkey being added for " + chatidtopub);
 
-      setTokenForIdToBePassedIn(chatidtopub, keystringtopub, res);
+      setTokenForIdToBePassedIn(chatidtopub, keystringtopub, restouser);
       //restouser.send("success");
       db.close();
     });
