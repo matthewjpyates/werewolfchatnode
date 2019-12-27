@@ -357,7 +357,7 @@ var sender = res;
     child = exec("java -jar /home/ubuntu/crypto/cryptoWorker.jar -e " + keyForUser + " " + newTokenStr,
       function (error, stdout, stderr, sender) {
 
-        dbo.collection("tokens").insertOne(newToken, function (err, result) {
+        dbo.collection("tokens").insertOne(newToken, function (err, result, sender) {
           if (err) {
 
             console.log("error on unserting the new token for "+ chatIdForNewToken);
