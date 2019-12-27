@@ -340,7 +340,7 @@ function lookupPubKeyForUserThenPassPubKeyToFunctionInArgs(user, funct_to_pass, 
 }
 
 
-function setTokenForIdToBePassedIn(chatIdForNewToken, keyForUser, restouser) {
+function setTokenForIdToBePassedIn(chatIdForNewToken, keyForUser, res) {
 
 
   var newTokenStr = randomstring.generate({length: 24, charset: 'alphabetic', capitalization: 'uppercase'});
@@ -362,12 +362,12 @@ function setTokenForIdToBePassedIn(chatIdForNewToken, keyForUser, restouser) {
 
             console.log("error on unserting the new token for "+ chatIdForNewToken);
 
-            restouser.send("fail:database_error");
+            res.send("fail:database_error");
 
           }
           else {
             //console.log("about to return" + "good:" + stdout);
-            restouser.send("good:" + stdout);
+            res.send("good:" + stdout);
           }
           db.close();
         });
