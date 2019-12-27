@@ -343,11 +343,7 @@ function lookupPubKeyForUserThenPassPubKeyToFunctionInArgs(user, funct_to_pass, 
 function setTokenForIdToBePassedIn(chatIdForNewToken, keyForUser, restouser) {
 
 
-  var newTokenStr = randomstring.generate({
-    length: 24,
-    charset: 'alphabetic',
-    capitalization: 'uppercase'
-  });
+  var newTokenStr = randomstring.generate({length: 24, charset: 'alphabetic', capitalization: 'uppercase'});
 
 
 
@@ -517,7 +513,7 @@ app.get('/gettoken/:chatid', function (req, res) {
   //var touser = setTokenForId(chatidtomaketokenfor, res);
 
   lookupPubKeyForUserThenPassPubKeyToFunctionInArgs(chatidtomaketokenfor,
-    function (public_key) { return setTokenForIdToBePassedIn(chatidtomaketokenfor, public_key, res); },
+    function (public_key) { setTokenForIdToBePassedIn(chatidtomaketokenfor, public_key, res); },
     res);
 
   //res.send(touser);
