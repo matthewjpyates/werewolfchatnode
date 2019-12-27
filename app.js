@@ -317,30 +317,25 @@ function seeIfTokenIsGoodForUserThenExecuteFunction(user, token_passed_in_by_use
 
 
 function lookupPubKeyForUserThenPassPubKeyToFunctionInArgs(user,funct_to_pass, response) {
-  console.log("about to pull keys for user");
 
   mongoWrapper(  function (err, db) {
     if (err) throw err;
     var dbo = db.db("chatdb");
     dbo.collection("public_keys").find({ chatid: user }).toArray(function (err, result) {
       if (err) throw err;
-      console.log("pub keys being pulled for " + user + " with the following result\n" + result[0].pubkeyhexstr);
-      console.log("the result of result.length is\n" + result.length);
 
       if (result.length > 0) {
 
-        console.log("lets see if you see this\n");
-        outputKey = String(result[0].pubkeyhexstr);
-        return String(result[0].pubkeyhexstr);
-
-
+        console.log("about to pass the public key to the fuction\nHere is the key\n"+result[0].pubkeyhexstr);
+        funct_to_pass(result[0].pubkeyhexstr);
+      }
+      else
+      {
+        response.send("fail:public_key_not_found");
       }
       db.close();
     });
   });
-
-  console.log("you shouldnt see this\n" + outputKey);
-  return outputKey;
 }
 
 
