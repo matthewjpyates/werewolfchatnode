@@ -289,8 +289,6 @@ function getTokenForUser(user) {
 
 function seeIfTokenIsGoodForUserThenExecuteFunction(user, token_passed_in_by_user, funct_to_pass, response) {
 
-  var outputToken = "";
-
   mongoWrapper(  function (err, db) {
     if (err) throw err;
     var dbo = db.db("chatdb");
