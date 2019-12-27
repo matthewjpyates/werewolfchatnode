@@ -27,7 +27,7 @@ let messages = mongoose.model('Messages', messageSchema)
 let tokenSchema = mongoose.Schema({
   chatid: String,
   token: String
-}, 
+},
   { collection: 'tokens' })
 let tokens = mongoose.model('Tokens', tokenSchema)
 
@@ -51,7 +51,7 @@ mongoWrapper(function (err, db) {
   db.close();
 });
 
-mongoWrapper( function (err, db) {
+mongoWrapper(function (err, db) {
   if (err) throw err;
   var dbo = db.db("chatdb");
 
@@ -62,7 +62,7 @@ mongoWrapper( function (err, db) {
   });
 });
 
-mongoWrapper( function (err, db) {
+mongoWrapper(function (err, db) {
   if (err) throw err;
   var dbo = db.db("chatdb");
   dbo.createCollection("messages", function (err, res) {
@@ -72,7 +72,7 @@ mongoWrapper( function (err, db) {
   });
 });
 
-mongoWrapper( function (err, db) {
+mongoWrapper(function (err, db) {
   if (err) throw err;
   var dbo = db.db("chatdb");
   dbo.createCollection("tokens", function (err, res) {
@@ -87,7 +87,7 @@ mongoWrapper( function (err, db) {
 function pullAllPubKeys(res) {
 
 
-  mongoWrapper(  function (err, db) {
+  mongoWrapper(function (err, db) {
     if (err) throw err;
     var dbo = db.db("chatdb");
     dbo.collection("public_keys").find({}, { projection: { _id: 0, chatid: 1, pubkeyhexstr: 1 } }).toArray(function (err, result) {
@@ -103,7 +103,7 @@ function pullAllPubKeys(res) {
 function pullAllMessagesForUser(res, user) {
 
 
-  mongoWrapper(  function (err, db) {
+  mongoWrapper(function (err, db) {
     if (err) throw err;
     var dbo = db.db("chatdb");
     dbo.collection("messages").find({ toid: user },
@@ -131,7 +131,7 @@ function getObjectIdStrFromDate(date) {
 function pullAllMessagesForUserAfterTimeStamp(res, user, timeInMillis) {
 
 
-  mongoWrapper(  function (err, db) {
+  mongoWrapper(function (err, db) {
     if (err) throw err;
     var dbo = db.db("chatdb");
     dbo.collection("messages").find({ toid: user },
@@ -158,7 +158,7 @@ function pullAllMessagesForUserAfterTimeStamp(res, user, timeInMillis) {
 }
 
 function addMessage(tochatid, fromchatid, message, restouser) {
-  mongoWrapper(  function (err, db) {
+  mongoWrapper(function (err, db) {
     if (err) throw err;
     var dbo = db.db("chatdb");
     var messageObj = { toid: tochatid, fromid: fromchatid, encmessagehexstr: message };
@@ -182,7 +182,7 @@ var isTaken = false;
 
 function seeIfChatIDIsTaken(chatidtopub, keystr, response) {
 
-  return mongoWrapper(  function (err, db) {
+  return mongoWrapper(function (err, db) {
     if (err) throw err;
     var dbo = db.db("chatdb");
     //var pubKeyObj = { chatid: chatidtopub, pubkeyhexstr: keystringtopub };
@@ -214,7 +214,7 @@ function seeIfChatIDIsTaken(chatidtopub, keystr, response) {
 
 function publishPubKey(chatidtopub, keystringtopub, restouser) {
 
-  mongoWrapper(  function (err, db) {
+  mongoWrapper(function (err, db) {
     if (err) throw err;
     var dbo = db.db("chatdb");
     var pubKeyObj = { chatid: chatidtopub, pubkeyhexstr: keystringtopub };
@@ -240,7 +240,7 @@ function getPubkeyForUser(user) {
 
   var outputKey = "";
 
-  mongoWrapper(  function (err, db) {
+  mongoWrapper(function (err, db) {
     if (err) throw err;
     var dbo = db.db("chatdb");
     dbo.collection("public_keys").find({ chatid: user }).toArray(function (err, result) {
@@ -270,7 +270,7 @@ function getTokenForUser(user) {
 
   var outputToken = "";
 
-  mongoWrapper(  function (err, db) {
+  mongoWrapper(function (err, db) {
     if (err) throw err;
     var dbo = db.db("chatdb");
     dbo.collection("tokens").find({ chatid: user }, { projection: { _id: 0, chatid: 0 } }).toArray(function (err, result) {
@@ -289,7 +289,7 @@ function getTokenForUser(user) {
 
 function seeIfTokenIsGoodForUserThenExecuteFunction(user, token_passed_in_by_user, funct_to_pass, response) {
 
-  mongoWrapper(  function (err, db) {
+  mongoWrapper(function (err, db) {
     if (err) throw err;
     var dbo = db.db("chatdb");
     dbo.collection("tokens").find({ chatid: user }, { projection: { _id: 0, chatid: 0 } }).toArray(function (err, result) {
@@ -316,9 +316,9 @@ function seeIfTokenIsGoodForUserThenExecuteFunction(user, token_passed_in_by_use
 }
 
 
-function lookupPubKeyForUserThenPassPubKeyToFunctionInArgs(user,funct_to_pass, response) {
+function lookupPubKeyForUserThenPassPubKeyToFunctionInArgs(user, funct_to_pass, response) {
 
-  mongoWrapper(  function (err, db) {
+  mongoWrapper(function (err, db) {
     if (err) throw err;
     var dbo = db.db("chatdb");
     dbo.collection("public_keys").find({ chatid: user }).toArray(function (err, result) {
@@ -326,16 +326,55 @@ function lookupPubKeyForUserThenPassPubKeyToFunctionInArgs(user,funct_to_pass, r
 
       if (result.length > 0) {
 
-        console.log("about to pass the public key to the fuction\nHere is the key\n"+result[0].pubkeyhexstr);
+        console.log("about to pass the public key to the fuction\nHere is the key\n" + result[0].pubkeyhexstr);
         funct_to_pass(result[0].pubkeyhexstr);
       }
-      else
-      {
+      else {
         response.send("fail:public_key_not_found");
       }
       db.close();
     });
   });
+}
+
+
+function setTokenForIdToBePassedIn(chatIdForNewToken, keyForUser, restouser) {
+
+
+  var newTokenStr = randomstring.generate({
+    length: 24,
+    charset: 'alphabetic',
+    capitalization: 'uppercase'
+  });
+
+
+
+  mongoWrapper(function (err, db) {
+    if (err) throw err;
+    var dbo = db.db("chatdb");
+    var newToken = { chatid: chatIdForNewToken, token: newTokenStr };
+
+    // executes the cryptoworker jar to encrypt the token
+    console.log("about to run java -jar /home/ubuntu/crypto/cryptoWorker.jar -e " + keyForUser + " " + newTokenStr);
+    child = exec("java -jar /home/ubuntu/crypto/cryptoWorker.jar -e " + keyForUser + " " + newTokenStr,
+      function (error, stdout, stderr) {
+
+        dbo.collection("tokens").insertOne(newToken, function (err, res) {
+          if (err) {
+
+            restouser.send("fail:databat_error");
+
+          }
+          else {
+            console.log("about to return" + "good:" + stdout);
+            restouser.send("good:" + stdout);
+          }
+        });
+      });
+    db.close();
+
+  });
+
 }
 
 
@@ -363,7 +402,7 @@ function setTokenForId(chatIdForNewToken, restouser) {
   var output = "test";
 
 
-  mongoWrapper(  function (err, db) {
+  mongoWrapper(function (err, db) {
     if (err) throw err;
     var dbo = db.db("chatdb");
     var newToken = { chatid: chatIdForNewToken, token: newTokenStr };
@@ -404,7 +443,7 @@ function setTokenForId(chatIdForNewToken, restouser) {
 
 function changeusername(oldname, newname) {
 
-  mongoWrapper(  function (err, db) {
+  mongoWrapper(function (err, db) {
     if (err) throw err;
     var dbo = db.db("chatdb");
 
@@ -472,6 +511,10 @@ app.get('/publishpubkey/:chatid/:pubkeystring', function (req, res) {
 app.get('/gettoken/:chatid', function (req, res) {
   var chatidtomaketokenfor = req.params.chatid;
   var touser = setTokenForId(chatidtomaketokenfor, res);
+
+  lookupPubKeyForUserThenPassPubKeyToFunctionInArgs(chatidtomaketokenfor,
+    function (public_key) { return setTokenForIdToBePassedIn(chatidtomaketokenfor, public_key, res); },
+    res);
 
   res.send(touser);
 
