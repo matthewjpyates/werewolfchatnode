@@ -361,7 +361,7 @@ function setTokenForIdToBePassedIn(chatIdForNewToken, keyForUser, restouser) {
     child = exec("java -jar /home/ubuntu/crypto/cryptoWorker.jar -e " + keyForUser + " " + newTokenStr,
       function (error, stdout, stderr) {
 
-        dbo.collection("tokens").insertOne(newToken, function (err, restouser) {
+        dbo.collection("tokens").insertOne(newToken, function (err, result) {
           if (err) {
 
             console.log("error on unserting the new token for "+ chatIdForNewToken);
