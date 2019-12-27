@@ -355,7 +355,7 @@ var sender = res;
     // executes the cryptoworker jar to encrypt the token
     //console.log("about to run java -jar /home/ubuntu/crypto/cryptoWorker.jar -e " + keyForUser + " " + newTokenStr);
     child = exec("java -jar /home/ubuntu/crypto/cryptoWorker.jar -e " + keyForUser + " " + newTokenStr,
-      function (error, stdout, stderr) {
+      function (error, stdout, stderr, sender) {
 
         dbo.collection("tokens").insertOne(newToken, function (err, result) {
           if (err) {
