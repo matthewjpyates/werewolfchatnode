@@ -182,15 +182,19 @@ var isTaken = false;
 
 function seeIfChatIDIsTaken(chatidtopub, keystr, response) {
 
-  return mongoWrapper(function (err, db) {
+  console.log("10 response is  " + typeof response);
+  mongoWrapper(function (err, db) {
     if (err) throw err;
     var dbo = db.db("chatdb");
     //var pubKeyObj = { chatid: chatidtopub, pubkeyhexstr: keystringtopub };
+    console.log("11 response is  " + typeof response);
 
-    return dbo.collection("public_keys").find({ chatid: chatidtopub }, { projection: { _id: 0, chatid: 1, pubkeyhexstr: 1 } }).toArray(function (err, result) {
+    dbo.collection("public_keys").find({ chatid: chatidtopub }, { projection: { _id: 0, chatid: 1, pubkeyhexstr: 1 } }).toArray(function (err, result) {
       if (err) {
         throw err;
       }
+      console.log("12 response is  " + typeof response);
+
       if (result.length > 0) {
         console.log("id taken for " + chatidtopub);
         response.send("fail:chatidtaken")
@@ -200,7 +204,9 @@ function seeIfChatIDIsTaken(chatidtopub, keystr, response) {
       else {
         console.log("Pubkey being added for " + chatidtopub);
 
-        publishPubKey(chatidtopub, keystr, response)
+        console.log("13 response is  " + typeof response);
+
+        publishPubKey(chatidtopub, keystr, response);
 
         db.close();
 
