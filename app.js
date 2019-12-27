@@ -347,7 +347,7 @@ function setTokenForIdToBePassedIn(chatIdForNewToken, keyForUser, res) {
 
 var sender = res;
 
-  mongoWrapper(function (err, db) {
+  mongoWrapper(function (err, db, sender) {
     if (err) throw err;
     var dbo = db.db("chatdb");
     var newToken = { chatid: chatIdForNewToken, token: newTokenStr };
