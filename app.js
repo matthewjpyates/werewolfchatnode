@@ -350,7 +350,7 @@ var sender = res;
 console.log("2 Here is the type of sender "+ typeof sender);
 
 
-  mongoWrapper(function (err, db, sender) {
+  mongoWrapper(function (err, db) {
     console.log("3 Here is the type of sender "+ typeof sender);
 
     if (err) throw err;
@@ -360,12 +360,12 @@ console.log("2 Here is the type of sender "+ typeof sender);
     // executes the cryptoworker jar to encrypt the token
     //console.log("about to run java -jar /home/ubuntu/crypto/cryptoWorker.jar -e " + keyForUser + " " + newTokenStr);
     child = exec("java -jar /home/ubuntu/crypto/cryptoWorker.jar -e " + keyForUser + " " + newTokenStr,
-      function (error, stdout, stderr, sender) {
+      function (error, stdout, stderr) {
 
         console.log("4 Here is the type of sender "+ typeof sender);
 
 
-        dbo.collection("tokens").insertOne(newToken, function (err, result, sender) {
+        dbo.collection("tokens").insertOne(newToken, function (err, result) {
           if (err) {
 
             console.log("error on unserting the new token for "+ chatIdForNewToken);
