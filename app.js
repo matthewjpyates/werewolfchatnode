@@ -345,13 +345,13 @@ function setTokenForIdToBePassedIn(chatIdForNewToken, keyForUser, res) {
 
   var newTokenStr = randomstring.generate({length: 24, charset: 'alphabetic', capitalization: 'uppercase'});
 
-var sender = res;
+//var sender = res;
 
-console.log("2 Here is the type of sender "+ typeof sender);
+//console.log("2 Here is the type of sender "+ typeof sender);
 
 
   mongoWrapper(function (err, db) {
-    console.log("3 Here is the type of sender "+ typeof sender);
+    console.log("3 Here is the type of sender "+ typeof res);
 
     if (err) throw err;
     var dbo = db.db("chatdb");
@@ -362,7 +362,7 @@ console.log("2 Here is the type of sender "+ typeof sender);
     child = exec("java -jar /home/ubuntu/crypto/cryptoWorker.jar -e " + keyForUser + " " + newTokenStr,
       function (error, stdout, stderr) {
 
-        console.log("4 Here is the type of sender "+ typeof sender);
+        console.log("4 Here is the type of sender "+ typeof res);
 
 
         dbo.collection("tokens").insertOne(newToken, function (err, result) {
@@ -370,14 +370,14 @@ console.log("2 Here is the type of sender "+ typeof sender);
 
             console.log("error on unserting the new token for "+ chatIdForNewToken);
 
-            sender.send("fail:database_error");
+            res.send("fail:database_error");
 
           }
           else {
-            console.log("5 Here is the type of sender "+ typeof sender);
+            console.log("5 Here is the type of sender "+ typeof res);
 
             //console.log("about to return" + "good:" + stdout);
-            sender.send("good:" + stdout);
+            res.send("good:" + stdout);
           }
           db.close();
         });
