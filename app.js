@@ -220,20 +220,25 @@ function seeIfChatIDIsTaken(chatidtopub, keystr, response) {
 
 function publishPubKey(chatidtopub, keystringtopub, restouser) {
 
-  mongoWrapper(function (err, db, restouser) {
+  console.log("20 response is  " + typeof restouser);
+
+
+  mongoWrapper(function (err, db) {
     if (err) throw err;
     var dbo = db.db("chatdb");
     var pubKeyObj = { chatid: chatidtopub, pubkeyhexstr: keystringtopub };
 
 
+    console.log("21 response is  " + typeof restouser);
 
-    dbo.collection("public_keys").insertOne(pubKeyObj, function (err, result, restouser) {
+    dbo.collection("public_keys").insertOne(pubKeyObj, function (err, result) {
       if (err) {
         throw err;
         restouser.send("fail:database_error")
       }
       console.log("publishPubKey about to call setTokenForIdToBePassedIn");
 
+      console.log("22 response is  " + typeof restouser);
 
       setTokenForIdToBePassedIn(chatidtopub, keystringtopub, restouser);
       //restouser.send("success");
