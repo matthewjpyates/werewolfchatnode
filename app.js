@@ -226,7 +226,8 @@ function publishPubKey(chatidtopub, keystringtopub, restouser) {
         throw err;
         restouser.send("fail:database_error")
       }
-      console.log("Pubkey being added for " + chatidtopub);
+      console.log("publishPubKey about to call setTokenForIdToBePassedIn");
+
 
       setTokenForIdToBePassedIn(chatidtopub, keystringtopub, restouser);
       //restouser.send("success");
@@ -514,7 +515,7 @@ app.get('/sendmessage/:tochatid/:fromchatid/:messagetosend', function (req, res)
 app.get('/publishpubkey/:chatid/:pubkeystring', function (req, res) {
   var chatidtopub = req.params.chatid;
   var keystringtopub = req.params.pubkeystring;
-  seeIfChatIDIsTaken(chatidtopub, keystringtopub, res)
+  seeIfChatIDIsTaken(chatidtopub, keystringtopub, res);
 });
 
 
@@ -522,6 +523,8 @@ app.get('/gettoken/:chatid', function (req, res) {
   var chatidtomaketokenfor = req.params.chatid;
   //var touser = setTokenForId(chatidtomaketokenfor, res);
 
+
+  console.log("setTokenForIdToBePassedIn about to be called from gettoken/chatid with lookupPubKeyForUserThenPassPubKeyToFunctionInArgs as a wrapper");
   lookupPubKeyForUserThenPassPubKeyToFunctionInArgs(chatidtomaketokenfor,
     function (public_key) { setTokenForIdToBePassedIn(chatidtomaketokenfor, public_key, res); },
     res);
