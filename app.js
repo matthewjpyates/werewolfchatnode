@@ -551,13 +551,14 @@ function moveFromTempToPub(chatidtopub, res) {
   mongoWrapper(function (err, db) {
     if (err) throw err;
     var dbo = db.db("chatdb");
-
+    console.log("in movefromtemptopub");
     var myquery = { chatid: chatidtopub };
 
     dbo.collection("temp_public_keys").find(myquery, { projection: { _id: 0 } }).toArray(function (err, result) {
       if (err) throw err;
 
       if (result.length > 0) {
+        console.log("found the key in temp keys");
 
 
         dbo.collection("temp_public_keys").remove(myquery, true);
@@ -572,6 +573,7 @@ function moveFromTempToPub(chatidtopub, res) {
             //output = "fail:database_error";
           }
           else {
+            console.log("everything worked");
 
             res.send("good:keys_verified");
 
