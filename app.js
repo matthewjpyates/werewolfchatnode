@@ -22,7 +22,7 @@ let tempPubKeySchema = mongoose.Schema({
   pubkeyhexstr: String
 },
   { collection: 'temp_public_keys' })
-let tempkeys = mongoose.model('TempPubKeySchema', pubKeySchema)
+let tempkeys = mongoose.model('TempPubKeySchema', tempPubKeySchema)
 
 
 
