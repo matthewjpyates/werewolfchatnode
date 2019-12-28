@@ -561,7 +561,7 @@ function moveFromTempToPub(chatidtopub, res) {
         console.log("found the key in temp keys");
 
 
-        dbo.collection("temp_public_keys").remove(myquery, true);
+        dbo.collection("temp_public_keys").deleteOne(myquery);
 
 
         dbo.collection("public_keys").insertOne(result[0], function (err, res1) {
