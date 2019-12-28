@@ -634,28 +634,36 @@ app.get('/pubkeys', function (req, res) {
   pullAllPubKeys(res)
 });
 
-app.get('/messages/:chatid', function (req, res) {
+app.get('/messages/:chatid/:token', function (req, res) {
   var chatIdToCheck = req.params.chatid;
-  pullAllMessagesForUser(res, chatIdToCheck)
+  var token = req.params.token;
+  seeIfTokenIsGoodForUserThenExecuteresponseFunction(chatidtopub, token, 
+    function () { pullAllMessagesForUser(res, chatIdToCheck) }, res);
 });
 
-app.get('/messagesaftertime/:chatid/:time', function (req, res) {
+
+// /messagesaftertime/:chatid/:time/:token
+app.get('/messagesaftertime/:chatid/:time/:token', function (req, res) {
   var chatIdToCheck = req.params.chatid;
   var timeinmillisecs = parseInt(req.params.time)
+  var token = req.params.token;
 
   if (timeinmillisecs < 1700000000) { res.send('[]') }
   else {
-    console.log("checking for all messages for " + chatIdToCheck + " after time " + timeinmillisecs);
-    pullAllMessagesForUserAfterTimeStamp(res, chatIdToCheck, timeinmillisecs)
+    seeIfTokenIsGoodForUserThenExecuteresponseFunction(chatidtopub, token, 
+      function () { pullAllMessagesForUserAfterTimeStamp(res, chatIdToCheck, timeinmillisecs) }, res);
   }
 
 });
 
-app.get('/sendmessage/:tochatid/:fromchatid/:messagetosend', function (req, res) {
+app.get('/sendmessage/:tochatid/:fromchatid/:messagetosend/:token', function (req, res) {
   var sender = req.params.fromchatid;
   var getter = req.params.tochatid;
   var mes = req.params.messagetosend;
-  addMessage(getter, sender, mes, res)
+  var token = req.params.token;
+  seeIfTokenIsGoodForUserThenExecuteresponseFunction(chatidtopub, token, function () { addMessage(getter, sender, mes, res); }, res);
+
+  //addMessage(getter, sender, mes, res)
 });
 
 app.get('/publishpubkey/:chatid/:pubkeystring', function (req, res) {
@@ -676,8 +684,6 @@ app.get('/gettoken/:chatid', function (req, res) {
   var chatidtomaketokenfor = req.params.chatid;
   //var touser = setTokenForId(chatidtomaketokenfor, res);
 
-
-  console.log("setTokenForIdToBePassedIn about to be called from gettoken/chatid with lookupPubKeyForUserThenPassPubKeyToFunctionInArgs as a wrapper");
   lookupPubKeyForUserThenPassPubKeyToFunctionInArgs(chatidtomaketokenfor,
     function (public_key) { setTokenForIdToBePassedIn(chatidtomaketokenfor, public_key, res); },
     res);
