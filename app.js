@@ -384,7 +384,8 @@ function getTokenForUser(user) {
 }
 
 
-function seeIfTokenIsGoodForUserThenExecuteFunction(user, token_passed_in_by_user, funct_to_pass, response) {
+
+function seeIfTokenIsGoodForUserThenExecuteresponseFunction(user, token_passed_in_by_user, funct_to_pass, response) {
 
   mongoWrapper(function (err, db) {
     if (err) throw err;
@@ -665,7 +666,7 @@ app.get('/publishpubkey/:chatid/:pubkeystring', function (req, res) {
 app.get('/verifykey/:chatid/:token', function (req, res) {
   var chatidtopub = req.params.chatid;
   var token = req.params.token;
-  seeIfTokenIsGoodForUserThenExecuteresponseFunction(chatidtopub, token, function () { moveFromTempToPub(chatidtopub, res) })
+  seeIfTokenIsGoodForUserThenExecuteresponseFunction(chatidtopub, token, function () { moveFromTempToPub(chatidtopub, res); }, res);
 });
 
 
