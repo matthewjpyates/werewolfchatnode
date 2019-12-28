@@ -658,7 +658,7 @@ app.get('/sendmessage/:tochatid/:fromchatid/:messagetosend', function (req, res)
 app.get('/publishpubkey/:chatid/:pubkeystring', function (req, res) {
   var chatidtopub = req.params.chatid;
   var keystringtopub = req.params.pubkeystring;
-  seeIfChatIDIsTakenThenRunPassedInFunct(chatidtopub, response, function () { loadKeyIntoTempKeys(chatidtopub, keystringtopub, res); })
+  seeIfChatIDIsTakenThenRunPassedInFunct(chatidtopub, res, function () { loadKeyIntoTempKeys(chatidtopub, keystringtopub, res); })
   //seeIfChatIDIsTaken(chatidtopub, keystringtopub, res);
 });
 
