@@ -399,7 +399,7 @@ function seeIfTokenIsGoodForUserThenExecuteresponseFunction(user, token_passed_i
           funct_to_pass();
         }
         else {
-          console.log("token found but it did not match");
+          console.log("token found but it did not match, user passed "+token_passed_in_by_user);
           response.send("fail:token_incorrect");
         }
       }
