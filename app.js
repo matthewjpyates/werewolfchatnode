@@ -650,7 +650,7 @@ app.get('/messagesaftertime/:chatid/:time/:token', function (req, res) {
 
   if (timeinmillisecs < 1700000000) { res.send('[]') }
   else {
-    seeIfTokenIsGoodForUserThenExecuteresponseFunction(chatidtopub, token, 
+    seeIfTokenIsGoodForUserThenExecuteresponseFunction(chatIdToCheck, token, 
       function () { pullAllMessagesForUserAfterTimeStamp(res, chatIdToCheck, timeinmillisecs) }, res);
   }
 
@@ -661,7 +661,7 @@ app.get('/sendmessage/:tochatid/:fromchatid/:messagetosend/:token', function (re
   var getter = req.params.tochatid;
   var mes = req.params.messagetosend;
   var token = req.params.token;
-  seeIfTokenIsGoodForUserThenExecuteresponseFunction(chatidtopub, token, function () { addMessage(getter, sender, mes, res); }, res);
+  seeIfTokenIsGoodForUserThenExecuteresponseFunction(sender, token, function () { addMessage(getter, sender, mes, res); }, res);
 
   //addMessage(getter, sender, mes, res)
 });
