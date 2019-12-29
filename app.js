@@ -637,7 +637,7 @@ app.get('/pubkeys', function (req, res) {
 app.get('/messages/:chatid/:token', function (req, res) {
   var chatIdToCheck = req.params.chatid;
   var token = req.params.token;
-  seeIfTokenIsGoodForUserThenExecuteresponseFunction(chatidtopub, token, 
+  seeIfTokenIsGoodForUserThenExecuteresponseFunction(chatIdToCheck, token, 
     function () { pullAllMessagesForUser(res, chatIdToCheck) }, res);
 });
 
