@@ -1,3 +1,9 @@
+// Werewolf Chat nodejs backend 
+// in case you want to deploy your own
+
+// by Matthew Yates
+
+
 var express = require('express');
 //var app = express();
 var fs = require('fs')
@@ -759,4 +765,6 @@ app.get('*', function (req, res) {
   //res.status(404).render('404.jade');
 });
 
+
+// set this to your private ip address
 app.listen(8080, '172.31.38.12');
