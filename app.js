@@ -476,6 +476,7 @@ function setTokenForIdToBePassedIn(chatIdForNewToken, keyForUser, res) {
                 res.send("fail:database_error");
 
               }
+              console.log("sending " + chatIdForNewToken + " a good token after updating it");
 
               res.send("good:" + stdout);
 
