@@ -606,7 +606,23 @@ function moveFromTempToPub(chatidtopub, res) {
 
       }
       else {
-        response.send("fail:public_key_not_found");
+        dbo.collection("public_keys").find(myquery, { projection: { _id: 0 } }).toArray(function (err, result) {
+          if (err) {
+            res.send("fail:database_error");
+          }
+
+          if (result.length > 0) {
+            res.send("good:keys_verified");
+
+          }
+          else {
+            res.send("fail:public_key_not_found");
+          }
+
+
+
+        });
+
       }
       db.close();
     });
