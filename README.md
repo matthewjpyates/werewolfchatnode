@@ -1,5 +1,7 @@
 # werewolfchatnode
 
+Things have gotten a lot more complicated with the server side stuff since I first wrote the backend deployer, so I have not had the time to reautomate the build. You will need to do some of it your self for now.
+
 If you want to use this as your own back end you will need to have the following installed with apt/yum
 
 npm
@@ -122,10 +124,55 @@ I have the following NPM modules installed to make this work
 │ └── sliced@1.0.1
 └─┬ randomstring@1.1.5
   └── array-uniq@1.0.2
+  
+  I also recomend getting a domain from freenom.com so you can get a free dns name and then use letsencrypt to have a https site
+
+
+you will need to add a proxy pass config so that nginx knows to serve the /api/ directory
+        location /api/ {
+
+        proxy_pass http://your private ip:8080/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgr
 
 
 For your TOR hidden service I refer you to this guide: https://2019.www.torproject.org/docs/tor-onion-service.html.en
 
-For setting up an eepsite this
+For setting up an eepsite try this: https://medium.com/@mhatta/how-to-set-up-untraceable-websites-eepsites-on-i2p-1fe26069271d
+
+
+
+you will need to change up your nginx conf as well so that the the tor site is not sent to https in the event you used the letssencrypt auto configurer
+
+in /etc/nginx/nginx.conf make sure the the server_names_hash_bucket_size is 256 to handle the length of tor addresses
+        server_names_hash_bucket_size 256;
+
+
+in /etc/nginx/sites-available/default add the following above the lets enrypted auto generated section
+server {
+
+        root /var/www/html;
+        index index.html index.htm index.nginx-debian.html;
+        server_name yourtoraddress.onion;
+
+
+        location /api/ {
+
+        proxy_pass http://your private ip:8080/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        }
+
+        listen 80 ;
+        listen [::]:80 ;
+}
+
+
 
 
