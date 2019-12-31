@@ -457,7 +457,7 @@ function setTokenForIdToBePassedIn(chatIdForNewToken, keyForUser, res) {
     child = exec("java -jar /home/ubuntu/crypto/cryptoWorker.jar -e " + keyForUser + " " + newTokenStr,
       function (error, stdout, stderr) {
 
-        dbo.collection("tokens").find({ chatid: user }, { projection: { _id: 0, chatid: 0 } }).toArray(function (err, result) {
+        dbo.collection("tokens").find({ chatid: chatIdForNewToken }, { projection: { _id: 0, chatid: 0 } }).toArray(function (err, result) {
           if (err) {
 
             console.log("error on searching if there were old tokens " + chatIdForNewToken);
