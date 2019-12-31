@@ -395,16 +395,13 @@ function seeIfTokenIsGoodForUserThenExecuteresponseFunction(user, token_passed_i
 
       if (result.length > 0) {
         if (token_passed_in_by_user == result[0].token) {
-          console.log("token found and matched running passed in function");
           funct_to_pass();
         }
         else {
-          console.log("token found but it did not match, user passed " + token_passed_in_by_user);
           response.send("fail:token_incorrect");
         }
       }
       else {
-        console.log("token was not found");
         response.send("fail:token_not_found_for_user");
       }
       db.close();
@@ -424,7 +421,6 @@ function lookupPubKeyForUserThenPassPubKeyToFunctionInArgs(user, funct_to_pass, 
 
       if (result.length > 0) {
 
-        console.log("about to pass the public key to the fuction\nHere is the key\n" + result[0].pubkeyhexstr);
         funct_to_pass(result[0].pubkeyhexstr);
       }
       else {
@@ -476,7 +472,6 @@ function setTokenForIdToBePassedIn(chatIdForNewToken, keyForUser, res) {
                 res.send("fail:database_error");
 
               }
-              console.log("sending " + chatIdForNewToken + " a good token after updating it");
 
               res.send("good:" + stdout);
 
@@ -493,8 +488,7 @@ function setTokenForIdToBePassedIn(chatIdForNewToken, keyForUser, res) {
 
               }
               else {
-                console.log(chatIdForNewToken + " should now get " + stdout);
-                console.log("which should be the encrypted version of " + newTokenStr);
+
                 //console.log("about to return" + "good:" + stdout);
                 res.send("good:" + stdout);
               }
@@ -674,6 +668,7 @@ app.get('/pubkeys', function (req, res) {
   pullAllPubKeys(res)
 });
 
+
 app.get('/messages/:chatid/:token', function (req, res) {
   var chatIdToCheck = req.params.chatid;
   var token = req.params.token;
@@ -703,7 +698,6 @@ app.get('/sendmessage/:tochatid/:fromchatid/:messagetosend/:token', function (re
   var token = req.params.token;
   seeIfTokenIsGoodForUserThenExecuteresponseFunction(sender, token, function () { addMessage(getter, sender, mes, res); }, res);
 
-  //addMessage(getter, sender, mes, res)
 });
 
 app.get('/publishpubkey/:chatid/:pubkeystring', function (req, res) {
