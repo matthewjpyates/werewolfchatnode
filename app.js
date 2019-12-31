@@ -399,7 +399,7 @@ function seeIfTokenIsGoodForUserThenExecuteresponseFunction(user, token_passed_i
           funct_to_pass();
         }
         else {
-          console.log("token found but it did not match, user passed "+token_passed_in_by_user);
+          console.log("token found but it did not match, user passed " + token_passed_in_by_user);
           response.send("fail:token_incorrect");
         }
       }
@@ -438,7 +438,6 @@ function lookupPubKeyForUserThenPassPubKeyToFunctionInArgs(user, funct_to_pass, 
 
 function setTokenForIdToBePassedIn(chatIdForNewToken, keyForUser, res) {
 
-  console.log("1 Here is the type of res " + typeof res);
 
   var newTokenStr = randomstring.generate({ length: 24, charset: 'alphabetic', capitalization: 'uppercase' });
 
@@ -448,7 +447,6 @@ function setTokenForIdToBePassedIn(chatIdForNewToken, keyForUser, res) {
 
 
   mongoWrapper(function (err, db) {
-    console.log("3 Here is the type of sender " + typeof res);
 
     if (err) throw err;
     var dbo = db.db("chatdb");
@@ -459,27 +457,52 @@ function setTokenForIdToBePassedIn(chatIdForNewToken, keyForUser, res) {
     child = exec("java -jar /home/ubuntu/crypto/cryptoWorker.jar -e " + keyForUser + " " + newTokenStr,
       function (error, stdout, stderr) {
 
-        console.log("4 Here is the type of sender " + typeof res);
-
-
-        dbo.collection("tokens").insertOne(newToken, function (err, result) {
+        dbo.collection("tokens").find({ chatid: user }, { projection: { _id: 0, chatid: 0 } }).toArray(function (err, result) {
           if (err) {
 
-            console.log("error on unserting the new token for " + chatIdForNewToken);
+            console.log("error on searching if there were old tokens " + chatIdForNewToken);
 
             res.send("fail:database_error");
 
           }
-          else {
-            console.log("5 Here is the type of sender " + typeof res);
 
-            //console.log("about to return" + "good:" + stdout);
-            res.send("good:" + stdout);
+
+          if (result.length > 0) {
+            dbo.collection("tokens").update({ chatid: chatIdForNewToken }, { $set: { token: newTokenStr } }, function (err, result) {
+              if (err) {
+
+                console.log("error on updating the new token for " + chatIdForNewToken);
+
+                res.send("fail:database_error");
+
+              }
+
+              res.send("good:" + stdout);
+
+            });
+          }
+          else {
+            dbo.collection("tokens").insertOne(newToken, function (err, result) {
+
+              if (err) {
+
+                console.log("error on inserting the new token for " + chatIdForNewToken);
+
+                res.send("fail:database_error");
+
+              }
+              else {
+                console.log(chatIdForNewToken + " should now get " + stdout);
+                console.log("which should be the encrypted version of " + newTokenStr);
+                //console.log("about to return" + "good:" + stdout);
+                res.send("good:" + stdout);
+              }
+            });
+
           }
           db.close();
         });
       });
-
   });
 
 }
@@ -637,7 +660,7 @@ app.get('/pubkeys', function (req, res) {
 app.get('/messages/:chatid/:token', function (req, res) {
   var chatIdToCheck = req.params.chatid;
   var token = req.params.token;
-  seeIfTokenIsGoodForUserThenExecuteresponseFunction(chatIdToCheck, token, 
+  seeIfTokenIsGoodForUserThenExecuteresponseFunction(chatIdToCheck, token,
     function () { pullAllMessagesForUser(res, chatIdToCheck) }, res);
 });
 
@@ -650,7 +673,7 @@ app.get('/messagesaftertime/:chatid/:time/:token', function (req, res) {
 
   if (timeinmillisecs < 1700000000) { res.send('[]') }
   else {
-    seeIfTokenIsGoodForUserThenExecuteresponseFunction(chatIdToCheck, token, 
+    seeIfTokenIsGoodForUserThenExecuteresponseFunction(chatIdToCheck, token,
       function () { pullAllMessagesForUserAfterTimeStamp(res, chatIdToCheck, timeinmillisecs) }, res);
   }
 
@@ -684,6 +707,7 @@ app.get('/gettoken/:chatid', function (req, res) {
   var chatidtomaketokenfor = req.params.chatid;
   //var touser = setTokenForId(chatidtomaketokenfor, res);
 
+  console.log("about to make a new token for " + chatidtomaketokenfor);
   lookupPubKeyForUserThenPassPubKeyToFunctionInArgs(chatidtomaketokenfor,
     function (public_key) { setTokenForIdToBePassedIn(chatidtomaketokenfor, public_key, res); },
     res);
